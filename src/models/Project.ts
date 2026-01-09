@@ -10,6 +10,11 @@ const ProjectSchema = new mongoose.Schema(
     content: String,
     live: String,
     github: String,
+    status: {
+    type: String,
+    enum: ["draft", "published"],
+    default: "draft",
+  },
   },
   { timestamps: true }
 );

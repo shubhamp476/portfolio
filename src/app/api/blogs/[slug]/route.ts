@@ -12,7 +12,11 @@ export async function GET(
 
     await connectDB();
 
-    const blog = await Blog.findOne({ slug }).lean();
+    const blog = await Blog.findOne({
+      slug,
+      status: "published",
+    });
+
 
     if (!blog) {
       return NextResponse.json(

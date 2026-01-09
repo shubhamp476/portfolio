@@ -6,6 +6,7 @@ type Blog = {
   slug: string;
   excerpt: string;
   coverImage: string;
+  
 };
 
 async function getBlogs(): Promise<Blog[]> {

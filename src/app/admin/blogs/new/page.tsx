@@ -19,6 +19,8 @@ export default function NewBlogPage() {
   const [excerpt, setExcerpt] = useState("");
   const [coverImage, setCoverImage] = useState("");
   const [content, setContent] = useState("");
+  const [status, setStatus] = useState<"draft" | "published">("draft");
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -77,6 +79,15 @@ export default function NewBlogPage() {
             height={400}
           />
         </div>
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value as any)}
+          className="w-full border rounded-lg px-4 py-3 mb-4"
+        >
+          <option value="draft">Draft</option>
+          <option value="published">Published</option>
+        </select>
+
 
         <button
           type="submit"
