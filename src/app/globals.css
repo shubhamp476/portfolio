@@ -17,4 +17,37 @@
 .input {
   @apply w-full rounded-xl border border-neutral-300 dark:border-neutral-700 px-4 py-3 bg-white dark:bg-black text-black dark:text-white;
 }
+/* BLOG GLOBAL STYLES */
+.prose h2 {
+  @apply text-2xl font-bold mt-12 mb-4;
+}
+
+.prose h3 {
+  @apply text-xl font-semibold mt-8 mb-3;
+}
+
+.prose p {
+  @apply text-base leading-7 text-neutral-700 dark:text-neutral-300;
+}
+
+.prose ul {
+  @apply list-disc pl-6;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose img {
+  @apply rounded-2xl my-8;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-neutral-300 dark:border-neutral-700 pl-4 italic text-neutral-600;
+}
+
+.prose code {
+  @apply bg-neutral-100 dark:bg-neutral-800 px-1 rounded;
+}
+
 

@@ -37,22 +37,41 @@ export async function GET(req: Request) {
   }
 }
 
-//POST: create blog
+// //POST: create blog
 
+// export async function POST(req: Request) {
+//   try {
+//     await connectDB();
+//     const body = await req.json();
+//     const blog = await Blog.create(body);
+//     return NextResponse.json(blog, { status: 201 });
+//   } catch (error) {
+//     console.error("BLOG CREATE ERROR:", error);
+//     return NextResponse.json(
+//       { error: "Failed to create blog" },
+//       { status: 500 }
+//     );
+//   }
+// }
 export async function POST(req: Request) {
   try {
     await connectDB();
     const body = await req.json();
+
+    console.log("BLOG POST BODY 👉", body);
+
     const blog = await Blog.create(body);
     return NextResponse.json(blog, { status: 201 });
-  } catch (error) {
-    console.error("BLOG CREATE ERROR:", error);
+  } catch (error: any) {
+    console.error("BLOG CREATE ERROR ❌", error.message);
+
     return NextResponse.json(
-      { error: "Failed to create blog" },
+      { error: error.message },
       { status: 500 }
     );
   }
 }
+
 
 
   //PUT: update blog
