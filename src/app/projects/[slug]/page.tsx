@@ -13,7 +13,7 @@ type Project = {
 
 async function getProject(slug: string): Promise<Project | null> {
   const res = await fetch(
-    `http://localhost:3000/api/projects/${slug}`,
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/projects/${slug}`,
     { cache: "no-store" }
   );
 

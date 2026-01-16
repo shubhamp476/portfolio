@@ -15,7 +15,7 @@ type Blog = {
 };
 
 async function getBlogs(): Promise<Blog[]> {
-  const res = await fetch("http://localhost:3000/api/blogs", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs`, {
     cache: "no-store",
   });
 

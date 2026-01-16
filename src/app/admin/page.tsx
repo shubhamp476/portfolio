@@ -14,7 +14,7 @@ type Project = {
 };
 
 async function getBlogs(): Promise<Blog[]> {
-  const res = await fetch("http://localhost:3000/api/blogs", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs`, {
     cache: "no-store",
   });
   if (!res.ok) return [];
@@ -22,7 +22,7 @@ async function getBlogs(): Promise<Blog[]> {
 }
 
 async function getProjects(): Promise<Project[]> {
-  const res = await fetch("http://localhost:3000/api/projects", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects`, {
     cache: "no-store",
   });
   if (!res.ok) return [];
