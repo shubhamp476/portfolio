@@ -31,7 +31,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
     >
       {/* IMAGE */}
       <div className="relative overflow-hidden">
-        {/* Category Badge */}
+        
         {blog.category && (
           <span className="
             absolute top-3 left-3 z-10

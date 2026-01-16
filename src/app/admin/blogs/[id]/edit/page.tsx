@@ -46,7 +46,7 @@ export default function EditBlogPage() {
   /* ========= LOAD BLOG ========= */
   useEffect(() => {
     async function loadBlog() {
-      const res = await fetch(`/api/blogs?id=${id}`);
+      const res = await fetch(`/api/blogs?id=${id}`, { cache: "no-store" });
       const blog = await res.json();
 
       setTitle(blog.title);
