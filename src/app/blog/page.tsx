@@ -14,8 +14,14 @@ type Blog = {
   content?: string;
 };
 
+const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "http://localhost:3000";
+
+
+
 async function getBlogs(): Promise<Blog[]> {
-  const res = await fetch("/api/blogs", {
+  const res = await fetch(`${baseUrl}/api/blogs`, {
   cache: "no-store",
 });
 

@@ -44,8 +44,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "http://localhost:3000";
 
-  const res = await fetch(`/api/blogs/${slug}`, { cache: "no-store" });
+
+
+
+  const res = await fetch(`${baseUrl}/api/blogs/${slug}`, { cache: "no-store" });
 
   if (!res.ok) {
     return { title: "Blog not found" };
