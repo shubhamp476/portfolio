@@ -3,9 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import { Types } from "mongoose";
 
-
-  //GET: list OR single
-
+// Get → List of blogs
 export async function GET(req: Request) {
   try {
     await connectDB();
@@ -14,15 +12,26 @@ export async function GET(req: Request) {
     const id = searchParams.get("id");
     const isAdmin = searchParams.get("admin") === "true";
 
-    //GET blog by ID
+    // Get blog by ID (admin edit)
     if (id && Types.ObjectId.isValid(id)) {
       const blog = await Blog.findById(id).lean();
       return NextResponse.json(blog);
     }
 
-    //GET blogs list
+    // 🔹 Blog list
     const blogs = await Blog.find(
-      isAdmin ? {} : { status: "published" }
+      isAdmin ? {} : { status: "published" },
+      {
+        title: 1,
+        slug: 1,
+        excerpt: 1,
+        featuredImage: 1,
+        tags: 1,
+        category: 1,
+        createdAt: 1,
+        status: 1,
+        views: 1,
+      }
     )
       .sort({ createdAt: -1 })
       .lean();
@@ -37,22 +46,7 @@ export async function GET(req: Request) {
   }
 }
 
-// //POST: create blog
-
-// export async function POST(req: Request) {
-//   try {
-//     await connectDB();
-//     const body = await req.json();
-//     const blog = await Blog.create(body);
-//     return NextResponse.json(blog, { status: 201 });
-//   } catch (error) {
-//     console.error("BLOG CREATE ERROR:", error);
-//     return NextResponse.json(
-//       { error: "Failed to create blog" },
-//       { status: 500 }
-//     );
-//   }
-// }
+// Post → Create new blog
 export async function POST(req: Request) {
   try {
     await connectDB();
@@ -64,7 +58,6 @@ export async function POST(req: Request) {
     return NextResponse.json(blog, { status: 201 });
   } catch (error: any) {
     console.error("BLOG CREATE ERROR ❌", error.message);
-
     return NextResponse.json(
       { error: error.message },
       { status: 500 }
@@ -72,10 +65,7 @@ export async function POST(req: Request) {
   }
 }
 
-
-
-  //PUT: update blog
-
+// Put → Update existing blog
 export async function PUT(req: Request) {
   try {
     await connectDB();
@@ -102,9 +92,7 @@ export async function PUT(req: Request) {
   }
 }
 
-
-  //DELETE: remove blog
-
+// Delete → DELETE BLOG
 export async function DELETE(req: Request) {
   try {
     await connectDB();

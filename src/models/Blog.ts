@@ -31,6 +31,11 @@ const BlogSchema = new Schema(
       type: [String],
       default: [],
     },
+    views: {
+  type: Number,
+  default: 0,
+},
+
 
     
     excerpt: {
@@ -100,6 +105,7 @@ const BlogSchema = new Schema(
   {
     timestamps: true, 
   }
+
 );
 
 export default models.Blog || mongoose.model("Blog", BlogSchema);

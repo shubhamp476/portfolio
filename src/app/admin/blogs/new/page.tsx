@@ -1,6 +1,6 @@
 "use client";
-
-import { useState } from "react";
+import WordCounter from "@/components/WordCounter";
+import { useState , useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
@@ -20,19 +20,16 @@ export default function NewBlogPage() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [author, setAuthor] = useState("Shubham");
-  const [category, setCategory] = useState("Tech");
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const [tags, setTags] = useState("");
 
-  /* =====================
-     CONTENT
-  ===================== */
+  
   const [featuredImage, setFeaturedImage] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
 
-  /* =====================
-     SEO
-  ===================== */
+  
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [canonicalUrl, setCanonicalUrl] = useState("");
@@ -46,7 +43,11 @@ export default function NewBlogPage() {
   const [faqs, setFaqs] = useState([{ question: "", answer: "" }]);
   const [status, setStatus] = useState<"draft" | "published">("draft");
 
-  
+  useEffect(() => {
+  fetch("/api/categories")
+    .then(res => res.json())
+    .then(data => setCategories(data.map((c: any) => c.name)));
+}, []);
   function handleTitleChange(value: string) {
     setTitle(value);
     setSlug(generateSlug(value));
@@ -63,37 +64,55 @@ export default function NewBlogPage() {
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  e.preventDefault();
 
-    await fetch("/api/blogs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title,
-        slug,
-        author,
-        category,
-        tags: tags.split(",").map((t) => t.trim()),
-        excerpt,
-        content,
-        featuredImage,
-        seo: {
-          metaTitle,
-          metaDescription,
-          canonicalUrl,
-        },
-        og: {
-          title: ogTitle,
-          description: ogDescription,
-          image: ogImage,
-        },
-        faqs,
-        status,
-      }),
-    });
+  
+  await fetch("/api/categories", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: category }),
+  });
+  if (
+  title.length > 60 ||
+  metaTitle.length > 60 ||
+  metaDescription.length > 160 ||
+  excerpt.length > 300
+) {
+  alert("Please fix SEO limits before saving ❌");
+  return;
+}
 
-    alert("Blog saved ✅");
-  }
+
+  
+  await fetch("/api/blogs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title,
+      slug,
+      author,
+      category,
+      tags: tags.split(",").map((t) => t.trim()),
+      excerpt,
+      content,
+      featuredImage,
+      seo: {
+        metaTitle,
+        metaDescription,
+        canonicalUrl,
+      },
+      og: {
+        title: ogTitle,
+        description: ogDescription,
+        image: ogImage,
+      },
+      faqs,
+      status,
+    }),
+  });
+
+  alert("Blog saved ✅");
+}
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-16">
@@ -104,13 +123,18 @@ export default function NewBlogPage() {
         {/* BASIC INFO */}
         <section>
           <h2 className="text-xl font-semibold mb-4">Basic Info</h2>
-
+          <WordCounter
+            value={title}
+            limit={60}
+            label="Recommended: 50–60 characters"
+          />
           <input
             className="w-full border px-4 py-3 mb-3"
             placeholder="Blog Title"
             value={title}
             onChange={(e) => handleTitleChange(e.target.value)}
           />
+          
 
           <input
             className="w-full border px-4 py-3 mb-3"
@@ -126,16 +150,22 @@ export default function NewBlogPage() {
             onChange={(e) => setAuthor(e.target.value)}
           />
 
-          <select
-            className="w-full border px-4 py-3 mb-3"
+          <label className="font-medium">Category</label>
+
+          <input
+            list="category-list"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-          >
-            <option>Tech</option>
-            <option>Career</option>
-            <option>Education</option>
-            <option>Make Money Online</option>
-          </select>
+            placeholder="Select or type new category"
+            className="w-full border px-4 py-3 mb-3 rounded"
+          />
+
+          <datalist id="category-list">
+            {categories.map((cat: string) => (
+              <option key={cat} value={cat} />
+            ))}
+          </datalist>
+
 
           <input
             className="w-full border px-4 py-3"
@@ -148,20 +178,30 @@ export default function NewBlogPage() {
         {/* SEO */}
         <section>
           <h2 className="text-xl font-semibold mb-4">SEO</h2>
-
+          <WordCounter
+            value={metaTitle}
+            limit={60}
+            label="SEO Meta Title"
+          />
           <input
             className="w-full border px-4 py-3 mb-3"
             placeholder="Meta Title (50–60 chars)"
             value={metaTitle}
             onChange={(e) => setMetaTitle(e.target.value)}
           />
-
+          
+          <WordCounter
+            value={metaDescription}
+            limit={160}
+            label="SEO Meta Description"
+          />
           <textarea
             className="w-full border px-4 py-3 mb-3"
             placeholder="Meta Description (150–160 chars)"
             value={metaDescription}
             onChange={(e) => setMetaDescription(e.target.value)}
           />
+          
 
           <input
             className="w-full border px-4 py-3"
@@ -182,12 +222,18 @@ export default function NewBlogPage() {
             onChange={(e) => setFeaturedImage(e.target.value)}
           />
 
+          <WordCounter
+            value={excerpt}
+            limit={300}
+            label="Excerpt (used in cards & SEO)"
+          />
           <textarea
             className="w-full border px-4 py-3 mb-3"
             placeholder="Excerpt / Short summary"
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
           />
+          
 
           <MDEditor value={content} onChange={(v) => setContent(v || "")} height={400} />
         </section>

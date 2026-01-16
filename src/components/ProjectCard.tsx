@@ -15,7 +15,7 @@ export default function ProjectCard({ project }: { project: Project }) {
     <article
       className="
         group overflow-hidden rounded-2xl border
-        bg-white dark:bg-neutral-900
+        bg-gray-200 dark:bg-neutral-900
         border-neutral-200 dark:border-neutral-800
         transition hover:shadow-lg
       "

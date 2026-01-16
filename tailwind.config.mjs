@@ -8,7 +8,6 @@ const config = {
   theme: {
     extend: {},
   },
-  plugins: [],
   plugins: [require("@tailwindcss/typography")],
 
 };

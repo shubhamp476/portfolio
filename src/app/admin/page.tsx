@@ -4,6 +4,7 @@ type Blog = {
   _id: string;
   title: string;
   status: "draft" | "published";
+  views: number;
 };
 
 type Project = {
@@ -31,6 +32,7 @@ async function getProjects(): Promise<Project[]> {
 export default async function AdminDashboard() {
   const blogs = await getBlogs();
   const projects = await getProjects();
+  
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-16">
@@ -51,6 +53,7 @@ export default async function AdminDashboard() {
     + New Project
   </Link>
 </div>
+
 
 
 
@@ -94,6 +97,11 @@ export default async function AdminDashboard() {
 
                   <button className="text-red-600">Delete</button>
                 </td>
+                <td className="text-sm text-neutral-500">
+  👀 {blog.views ?? 0}
+</td>
+
+                
               </tr>
             ))}
           </tbody>

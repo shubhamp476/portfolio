@@ -2,77 +2,85 @@ import Link from "next/link";
 
 type Blog = {
   title: string;
-  description: string;
-  image: string;
-  date: string;
+  excerpt: string;
+  featuredImage?: string;
+  createdAt: string;
   slug: string;
   tags: string[];
+  category?: string;
+  views?: number;
+  content?: string;
 };
 
+function calculateReadingTime(text = "") {
+  const words = text.trim().split(/\s+/).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
 export default function BlogCard({ blog }: { blog: Blog }) {
+  const readingTime = calculateReadingTime(blog.content || "");
+
   return (
     <article
       className="
-        overflow-hidden rounded-2xl border
-        bg-white dark:bg-neutral-900
+        group overflow-hidden rounded-2xl border
+        bg-gray-200 dark:bg-neutral-900
         border-neutral-200 dark:border-neutral-800
-        transition hover:shadow-lg
+        transition hover:shadow-lg hover:bg-blue-100 dark:hover:bg-blue-900/30
       "
     >
-      {/* Image */}
-      <div className="overflow-hidden">
+      {/* IMAGE */}
+      <div className="relative overflow-hidden">
+        {/* Category Badge */}
+        {blog.category && (
+          <span className="
+            absolute top-3 left-3 z-10
+            rounded-full px-3 py-1 text-xs font-medium
+            bg-black/70 text-white
+          ">
+            {blog.category}
+          </span>
+        )}
+
         <img
-          src={blog.image}
+          src={blog.featuredImage || "/placeholder.jpg"}
           alt={blog.title}
-          className="h-56 w-full object-cover"
+          className="
+            h-52 w-full object-cover
+            transition-transform duration-300
+            group-hover:scale-105
+          "
         />
       </div>
 
-      {/* Content */}
+      {/* CONTENT */}
       <div className="p-6">
-        {/* Date */}
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-2">
-          {blog.date}
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+          {new Date(blog.createdAt).toDateString()}
         </p>
 
-        {/* Title */}
         <h2 className="text-2xl font-bold mb-2 text-black dark:text-white">
           {blog.title}
         </h2>
 
-        {/* Description */}
-        <p className="text-neutral-600 dark:text-neutral-300 mb-6">
-          {blog.description}
+        <p className="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-3 mb-4">
+          {blog.excerpt}
         </p>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {blog.tags.map((tag) => (
-            <span
-              key={tag}
-              className="
-                rounded-full
-                bg-neutral-100 dark:bg-neutral-800
-                text-neutral-700 dark:text-neutral-300
-                px-3 py-1 text-sm
-              "
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-neutral-400">
-          <div className="flex items-center gap-2">
-            📅 <span>{blog.date}</span>
+        {/* FOOTER */}
+        <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
+          <div className="flex items-center gap-3">
+            <span>⏱ {readingTime} min</span>
+            {typeof blog.views === "number" && (
+              <span>👀 {blog.views}</span>
+            )}
           </div>
 
           <Link
             href={`/blog/${blog.slug}`}
             className="font-medium hover:underline"
           >
-            Read More →
+            Read →
           </Link>
         </div>
       </div>

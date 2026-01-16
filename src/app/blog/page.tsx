@@ -1,12 +1,17 @@
-import Link from "next/link";
+import BlogCard from "@/components/BlogCard";
+import BlogCardSkeleton from "@/components/BlogCardSkeleton";
 
 type Blog = {
   _id: string;
   title: string;
   slug: string;
   excerpt: string;
-  coverImage: string;
-  
+  featuredImage: string;
+  createdAt: string;
+  tags?: string[];
+  category?: string;
+  views?: number;
+  content?: string;
 };
 
 async function getBlogs(): Promise<Blog[]> {
@@ -21,37 +26,41 @@ async function getBlogs(): Promise<Blog[]> {
 export default async function BlogPage() {
   const blogs = await getBlogs();
 
-  return (
-    <main className="max-w-6xl mx-auto px-6 py-16">
-      <h1 className="text-4xl font-bold mb-12">Blog</h1>
+  // Skeleton loader
+  if (!blogs || blogs.length === 0) {
+    return (
+      <main className="max-w-7xl mx-auto px-6 py-16">
+        <h1 className="text-4xl font-bold mb-10">Blog</h1>
 
-      {blogs.length === 0 && (
-        <p className="text-neutral-500">No blogs published yet.</p>
-      )}
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <BlogCardSkeleton key={i} />
+          ))}
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="max-w-7xl mx-auto px-6 py-16">
+      <h1 className="text-4xl font-bold mb-10">Blog</h1>
 
       <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {blogs.map((blog) => (
-          <Link
+          <BlogCard
             key={blog._id}
-            href={`/blog/${blog.slug}`}
-            className="group"
-          >
-            <div className="overflow-hidden rounded-2xl mb-4">
-              <img
-                src={blog.coverImage}
-                alt={blog.title}
-                className="h-56 w-full object-cover group-hover:scale-105 transition"
-              />
-            </div>
-
-            <h2 className="text-xl font-semibold mb-2">
-              {blog.title}
-            </h2>
-
-            <p className="text-neutral-600 dark:text-neutral-400 line-clamp-3">
-              {blog.excerpt}
-            </p>
-          </Link>
+            blog={{
+              title: blog.title,
+              excerpt: blog.excerpt,
+              featuredImage: blog.featuredImage,
+              createdAt: blog.createdAt,
+              slug: blog.slug,
+              tags: blog.tags || [],
+              category: blog.category,
+              views: blog.views,
+              content: blog.content,
+            }}
+          />
         ))}
       </div>
     </main>
