@@ -46,7 +46,13 @@ export default function EditBlogPage() {
   /* ========= LOAD BLOG ========= */
   useEffect(() => {
     async function loadBlog() {
-      const res = await fetch(`/api/blogs?id=${id}`, { cache: "no-store" });
+      const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+      const res = await fetch(`${baseUrl}/api/blogs?id=${id}`, {
+  cache: "no-store",
+});
+
       const blog = await res.json();
 
       setTitle(blog.title);
@@ -89,8 +95,9 @@ export default function EditBlogPage() {
 
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
-
-    await fetch(`/api/blogs?id=${id}`, {
+    const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    await fetch(`${baseUrl}/api/blogs?id=${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -82,9 +82,10 @@ export default function NewBlogPage() {
   return;
 }
 
-
+  const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   
-  await fetch("/api/blogs", {
+  await fetch(`${baseUrl}/api/blogs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

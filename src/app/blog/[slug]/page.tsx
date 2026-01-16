@@ -2,8 +2,12 @@ import { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
 
 async function getBlog(slug: string) {
+  const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "http://localhost:3000";
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs/${slug}`,
+    `${baseUrl}/api/blogs/${slug}`,
     { cache: "no-store" }
   );
 
@@ -27,10 +31,14 @@ function generateFaqSchema(faqs: { question: string; answer: string }[]) {
 }
 
 async function getRelatedBlogs(category: string, slug: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?category=${category}&exclude=${slug}`,
-    { cache: "no-store" }
-  );
+  const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+const res = await fetch(
+  `${baseUrl}/api/blogs?category=${category}&exclude=${slug}`,
+  { cache: "no-store" }
+);
+
 
   if (!res.ok) return [];
   return res.json();

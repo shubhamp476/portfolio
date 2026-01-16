@@ -23,7 +23,10 @@ export default function EditProjectPage() {
   // 🔹 Load project by ID
   useEffect(() => {
     async function loadProject() {
-      const res = await fetch(`/api/projects?id=${id}`);
+      const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+const res = await fetch(`${baseUrl}/api/projects?id=${id}`);
       const data = await res.json();
 
       setTitle(data.title);
@@ -41,7 +44,10 @@ export default function EditProjectPage() {
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
 
-    await fetch(`/api/projects?id=${id}`, {
+    const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    await fetch(`${baseUrl}/api/projects?id=${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

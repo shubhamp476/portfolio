@@ -14,15 +14,27 @@ type Project = {
 };
 
 async function getBlogs(): Promise<Blog[]> {
-  const res = await fetch("/api/blogs?admin=true", { cache: "no-store" });
+  const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "http://localhost:3000";
+
+const res = await fetch(
+  `${baseUrl}/api/blogs?admin=true`,
+  { cache: "no-store" }
+);
+
   if (!res.ok) return [];
   return res.json();
 }
 
 async function getProjects(): Promise<Project[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects`, {
-    cache: "no-store",
-  });
+  const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const res = await fetch(`${baseUrl}/api/projects`, {
+  cache: "no-store",
+});
+
   if (!res.ok) return [];
   return res.json();
 }
