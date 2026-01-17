@@ -26,7 +26,7 @@ export default function EditProjectPage() {
       const baseUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-const res = await fetch(`${baseUrl}/api/projects?id=${id}`);
+const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects?id=${id}`);
       const data = await res.json();
 
       setTitle(data.title);
@@ -47,7 +47,7 @@ const res = await fetch(`${baseUrl}/api/projects?id=${id}`);
     const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-    await fetch(`${baseUrl}/api/projects?id=${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects?id=${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -17,7 +17,7 @@ async function getProject(slug: string): Promise<Project | null> {
   "http://localhost:3000";
 
   const res = await fetch(
-    `${baseUrl}/api/projects/${slug}`,
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/projects/${slug}`,
     { cache: "no-store" }
   );
 

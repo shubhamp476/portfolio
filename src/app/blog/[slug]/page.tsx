@@ -7,7 +7,7 @@ async function getBlog(slug: string) {
   "http://localhost:3000";
 
   const res = await fetch(
-    `${baseUrl}/api/blogs/${slug}`,
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs/${slug}`,
     { cache: "no-store" }
   );
 
@@ -35,7 +35,7 @@ async function getRelatedBlogs(category: string, slug: string) {
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 const res = await fetch(
-  `${baseUrl}/api/blogs?category=${category}&exclude=${slug}`,
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?category=${category}&exclude=${slug}`,
   { cache: "no-store" }
 );
 
@@ -59,7 +59,7 @@ export async function generateMetadata({
 
 
 
-  const res = await fetch(`${baseUrl}/api/blogs/${slug}`, { cache: "no-store" });
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs/${slug}`, { cache: "no-store" });
 
   if (!res.ok) {
     return { title: "Blog not found" };

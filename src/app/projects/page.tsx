@@ -5,7 +5,7 @@ async function getProjects() {
     process.env.NEXT_PUBLIC_SITE_URL ||
     "http://localhost:3000";
 
-  const res = await fetch(`${baseUrl}/api/projects`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects`, {
     cache: "no-store",
   });
   return res.json();

@@ -19,7 +19,7 @@ async function getBlogs(): Promise<Blog[]> {
   "http://localhost:3000";
 
 const res = await fetch(
-  `${baseUrl}/api/blogs?admin=true`,
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?admin=true`,
   { cache: "no-store" }
 );
 
@@ -31,7 +31,7 @@ async function getProjects(): Promise<Project[]> {
   const baseUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-  const res = await fetch(`${baseUrl}/api/projects`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects`, {
   cache: "no-store",
 });
 

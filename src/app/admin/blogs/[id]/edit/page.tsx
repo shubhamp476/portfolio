@@ -49,7 +49,7 @@ export default function EditBlogPage() {
       const baseUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-      const res = await fetch(`${baseUrl}/api/blogs?id=${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?id=${id}`, {
   cache: "no-store",
 });
 
@@ -97,7 +97,7 @@ export default function EditBlogPage() {
     e.preventDefault();
     const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    await fetch(`${baseUrl}/api/blogs?id=${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?id=${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -21,9 +21,8 @@ const baseUrl =
 
 
 async function getBlogs(): Promise<Blog[]> {
-  const res = await fetch(`${baseUrl}/api/blogs`, {
-  cache: "no-store",
-});
+  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs`,{ cache: "no-store" }
+);
 
 
   if (!res.ok) return [];

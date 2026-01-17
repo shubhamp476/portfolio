@@ -85,7 +85,7 @@ export default function NewBlogPage() {
   const baseUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   
-  await fetch(`${baseUrl}/api/blogs`, {
+  await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
