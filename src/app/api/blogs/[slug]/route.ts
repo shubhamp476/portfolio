@@ -2,16 +2,14 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 
-
 export async function GET(
   req: Request,
-  context: { params: Promise<{ slug: string }> }
+  { params }: { params: { slug: string } }
 ) {
   try {
     await connectDB();
 
-    // ✅ FIX: await params
-    const { slug } = await context.params;
+    const { slug } = params;
 
     if (!slug) {
       return NextResponse.json(
