@@ -1,13 +1,14 @@
 import { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
 
-async function getBlog(slug: string) {
-  const baseUrl =
+const baseUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "http://localhost:3000";
+  "http://localhost:3001";
 
+
+async function getBlog(slug: string) {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs/${slug}`,
+    `${baseUrl}/api/blogs/${slug}`,
     { cache: "no-store" }
   );
 
@@ -31,14 +32,10 @@ function generateFaqSchema(faqs: { question: string; answer: string }[]) {
 }
 
 async function getRelatedBlogs(category: string, slug: string) {
-  const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
 const res = await fetch(
-  `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?category=${category}&exclude=${slug}`,
+  `${baseUrl}/api/blogs?category=${category}&exclude=${slug}`,
   { cache: "no-store" }
 );
-
 
   if (!res.ok) return [];
   return res.json();
@@ -52,14 +49,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "http://localhost:3000";
-
-
-
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs/${slug}`, { cache: "no-store" });
+  const res = await fetch(`${baseUrl}/api/blogs/${slug}`, { cache: "no-store" });
 
   if (!res.ok) {
     return { title: "Blog not found" };
@@ -74,7 +64,7 @@ export async function generateMetadata({
     openGraph: {
       title: blog.title,
       description: blog.excerpt,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${blog.slug}`,
+      url: `${baseUrl}/blog/${blog.slug}`,
       images: [
         {
           url: blog.featuredImage, // 🔥 YAHI IMAGE SHARE HOGI
@@ -126,24 +116,21 @@ export default async function BlogDetail({
         <span className="text-xs text-neutral-500">Share</span>
 
         <a
-          href={`https://twitter.com/intent/tweet?url=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${blog.slug}`}
-          target="_blank"
+          href={`https://twitter.com/intent/tweet?url=${baseUrl}/blog/${blog.slug}`}          target="_blank"
           className="h-10 w-10 flex items-center justify-center rounded-full border hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
         >
           𝕏
         </a>
 
         <a
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${blog.slug}`}
-          target="_blank"
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${baseUrl}/blog/${blog.slug}`}          target="_blank"
           className="h-10 w-10 flex items-center justify-center rounded-full border hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
         >
           in
         </a>
 
         <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${process.env.NEXT_PUBLIC_SITE_URL}/blog/${blog.slug}`}
-          target="_blank"
+          href={`https://www.facebook.com/sharer/sharer.php?u=${baseUrl}/blog/${blog.slug}`}          target="_blank"
           className="h-10 w-10 flex items-center justify-center rounded-full border hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
         >
           f

@@ -16,7 +16,7 @@ type Project = {
 async function getBlogs(): Promise<Blog[]> {
   const baseUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  "http://localhost:3000";
+  "http://localhost:3001";
 
 const res = await fetch(
   `${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?admin=true`,
@@ -29,7 +29,7 @@ const res = await fetch(
 
 async function getProjects(): Promise<Project[]> {
   const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
   const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects`, {
   cache: "no-store",

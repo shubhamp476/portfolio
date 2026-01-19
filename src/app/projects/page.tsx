@@ -1,11 +1,12 @@
 import ProjectCard from "@/components/ProjectCard";
 
-async function getProjects() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "http://localhost:3000";
+const baseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "http://localhost:3001";
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects`, {
+async function getProjects() {
+
+  const res = await fetch(`${baseUrl}/api/projects`, {
     cache: "no-store",
   });
   return res.json();

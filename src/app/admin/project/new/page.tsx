@@ -19,7 +19,7 @@ export default function NewProjectPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
     const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

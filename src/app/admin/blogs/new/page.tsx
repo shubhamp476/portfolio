@@ -83,7 +83,7 @@ export default function NewBlogPage() {
 }
 
   const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
   
   await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs`, {
     method: "POST",

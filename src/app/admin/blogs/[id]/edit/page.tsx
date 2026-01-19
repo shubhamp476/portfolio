@@ -47,7 +47,7 @@ export default function EditBlogPage() {
   useEffect(() => {
     async function loadBlog() {
       const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?id=${id}`, {
   cache: "no-store",
@@ -96,7 +96,7 @@ export default function EditBlogPage() {
   async function handleUpdate(e: React.FormEvent) {
     e.preventDefault();
     const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
     await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blogs?id=${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

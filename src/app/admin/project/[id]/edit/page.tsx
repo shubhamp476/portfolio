@@ -24,7 +24,7 @@ export default function EditProjectPage() {
   useEffect(() => {
     async function loadProject() {
       const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
 const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects?id=${id}`);
       const data = await res.json();
@@ -45,7 +45,7 @@ const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects?id=${i
     e.preventDefault();
 
     const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
     await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/projects?id=${id}`, {
       method: "PUT",
