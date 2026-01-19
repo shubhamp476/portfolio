@@ -28,7 +28,7 @@ async function getProject(slug: string): Promise<Project | null> {
 export default async function ProjectDetail({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
   const project = await getProject(slug);
