@@ -9,9 +9,10 @@
     color: black;
   }
 
-  .dark body {
+  .dark body{
     background-color: black;
     color: white;
+    text: white;
   }
 }
 .input {
@@ -19,16 +20,24 @@
 }
 /* BLOG GLOBAL STYLES */
 .prose h2 {
-  @apply text-2xl font-bold mt-12 mb-4;
+  @apply text-2xl  font-bold mt-12 mb-4;
 }
 
 .prose h3 {
-  @apply text-xl font-semibold mt-8 mb-3;
+  @apply text-xl dark:text-white  font-semibold mt-8 mb-3;
 }
 
-.prose p {
-  @apply text-base leading-7 text-neutral-700 dark:text-neutral-300;
+.dark .prose h2{
+  color: rgb(248, 248, 248); 
 }
+
+.prose {
+  color: rgb(19, 21, 22); 
+}
+.dark .prose {
+  color: rgb(192, 196, 205); 
+}
+
 
 .prose ul {
   @apply list-disc pl-6;
@@ -50,4 +59,19 @@
   @apply bg-neutral-100 dark:bg-neutral-800 px-1 rounded;
 }
 
+.author-name {
+  @apply font-medium text-2xl text-neutral-800 dark:text-neutral-200;
+}
 
+.dark .author-name {
+  @apply font-medium text-2xl  text-neutral-200;
+}
+
+.dark .date {
+  @apply font-medium   text-neutral-200;
+}
+
+.prose p {
+  @apply leading-8;
+}
+.prose h2 { @apply scroll-mt-24; }

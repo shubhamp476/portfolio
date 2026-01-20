@@ -18,6 +18,15 @@ export async function GET(req: Request) {
       return NextResponse.json(blog);
     }
 
+    //reading time function
+    function calculateReadingTime(content: string) {
+  if (!content) return 0;
+  const wordsPerMinute = 200;
+  const words = content.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
+}
+
+
     // 🔹 Blog list
     const blogs = await Blog.find(
       isAdmin ? {} : { status: "published" },
@@ -31,6 +40,7 @@ export async function GET(req: Request) {
         createdAt: 1,
         status: 1,
         views: 1,
+        content: 1,
       }
     )
       .sort({ createdAt: -1 })

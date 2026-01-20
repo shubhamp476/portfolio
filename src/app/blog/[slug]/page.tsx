@@ -1,22 +1,25 @@
 import { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
+import BlogShareButtons from "@/components/BlogShareButtons";
+
+
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "http://localhost:3001";
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
 
-
+// Fetch single blog
 async function getBlog(slug: string) {
-  const res = await fetch(
-    `${baseUrl}/api/blogs/${slug}`,
-    { cache: "no-store" }
-  );
-
+  const res = await fetch(`${baseUrl}/api/blogs/${slug}`, {
+    cache: "no-store",
+  });
   if (!res.ok) return null;
   return res.json();
 }
 
-function generateFaqSchema(faqs: { question: string; answer: string }[]) {
+// FAQ Schema
+function generateFaqSchema(
+  faqs: { question: string; answer: string }[]
+) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -31,52 +34,82 @@ function generateFaqSchema(faqs: { question: string; answer: string }[]) {
   };
 }
 
-async function getRelatedBlogs(category: string, slug: string) {
-const res = await fetch(
-  `${baseUrl}/api/blogs?category=${category}&exclude=${slug}`,
-  { cache: "no-store" }
-);
-
-  if (!res.ok) return [];
-  return res.json();
+// Blog Article Schema 
+function generateArticleSchema(blog: any, baseUrl: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: blog.title,
+    description: blog.excerpt,
+    image: [blog.featuredImage],
+    author: {
+      "@type": "Person",
+      name: "Shubham",
+      url: `${baseUrl}/about`,
+    },
+    publisher: {
+      "@type": "Person",
+      name: "Shubham",
+    },
+    datePublished: blog.createdAt,
+    dateModified: blog.updatedAt || blog.createdAt,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/blog/${blog.slug}`,
+    },
+  };
 }
 
 
+// Realted blogs
+async function getRelatedBlogs(category: string, slug: string) {
+  const res = await fetch(`${baseUrl}/api/blogs`, {
+    cache: "no-store",
+  });
+  if (!res.ok) return [];
 
+  const blogs = await res.json();
+
+  const sameCategory = blogs.filter(
+    (b: any) => b.category === category && b.slug !== slug
+  );
+  const otherCategory = blogs.filter(
+    (b: any) => b.category !== category && b.slug !== slug
+  );
+
+  return [...sameCategory, ...otherCategory];
+}
+
+//reading time function
+function calculateReadingTime(content: string) {
+  const wordsPerMinute = 200;
+  const words = content.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
+}
+
+
+// Metadata
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const res = await fetch(`${baseUrl}/api/blogs/${slug}`, { cache: "no-store" });
+  const blog = await getBlog(slug);
 
-  if (!res.ok) {
-    return { title: "Blog not found" };
-  }
-
-  const blog = await res.json();
+  if (!blog) return { title: "Blog not found" };
 
   return {
     title: blog.title,
     description: blog.excerpt,
-
     openGraph: {
       title: blog.title,
       description: blog.excerpt,
-      url: `${baseUrl}/blog/${blog.slug}`,
-      images: [
-        {
-          url: blog.featuredImage, // 🔥 YAHI IMAGE SHARE HOGI
-          width: 1200,
-          height: 630,
-        },
-      ],
+      images: [{ url: blog.featuredImage }],
       type: "article",
     },
-
     twitter: {
-      card: "summary_large_image", // 🔥 ISSE IMAGE DIKHEGI
+      card: "summary_large_image",
       title: blog.title,
       description: blog.excerpt,
       images: [blog.featuredImage],
@@ -84,7 +117,7 @@ export async function generateMetadata({
   };
 }
 
-
+// Blog Detail Page
 export default async function BlogDetail({
   params,
 }: {
@@ -92,16 +125,32 @@ export default async function BlogDetail({
 }) {
   const { slug } = await params;
   const blog = await getBlog(slug);
+  const readingTime = calculateReadingTime(blog.content);
+
 
   if (!blog) {
     return <h1 className="p-10 text-2xl">Blog not found</h1>;
   }
 
-  const relatedBlogs = await getRelatedBlogs(blog.category, blog.slug);
+  const relatedBlogs = await getRelatedBlogs(
+    blog.category,
+    blog.slug
+  );
+
+  const publishedDate = new Date(blog.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  );
 
   return (
     <article className="max-w-4xl mx-auto px-6 py-16">
-      {/* FAQ JSON-LD (SEO ONLY) */}
+      <BlogShareButtons url={`${baseUrl}/blog/${blog.slug}`} />
+
+      {/* FAQ JSON-LD */}
       {blog.faqs?.length > 0 && (
         <script
           type="application/ld+json"
@@ -110,67 +159,77 @@ export default async function BlogDetail({
           }}
         />
       )}
+      {/* Article JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateArticleSchema(blog, baseUrl)),
+        }}
+      />
 
-      {/* Share Buttons – Right */}
-      <div className="hidden lg:flex fixed right-6 top-1/3 flex-col items-center gap-4">
-        <span className="text-xs text-neutral-500">Share</span>
-
-        <a
-          href={`https://twitter.com/intent/tweet?url=${baseUrl}/blog/${blog.slug}`}          target="_blank"
-          className="h-10 w-10 flex items-center justify-center rounded-full border hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-        >
-          𝕏
-        </a>
-
-        <a
-          href={`https://www.linkedin.com/sharing/share-offsite/?url=${baseUrl}/blog/${blog.slug}`}          target="_blank"
-          className="h-10 w-10 flex items-center justify-center rounded-full border hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-        >
-          in
-        </a>
-
-        <a
-          href={`https://www.facebook.com/sharer/sharer.php?u=${baseUrl}/blog/${blog.slug}`}          target="_blank"
-          className="h-10 w-10 flex items-center justify-center rounded-full border hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-        >
-          f
-        </a>
-      </div>
 
       {/* TITLE */}
-      <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
+      <h1 className="text-4xl font-bold mb-6">{blog.title}</h1>
 
-      {/* AUTHOR + SOCIAL */}
-      <section className="mt-16 border-t pt-8 dark:border-neutral-700">
-        <p className="font-semibold">Written by Shubham</p>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">
-          Full Stack Developer & Technical Writer
-        </p>
+      {/* AUTHOR + DATE */}
+{/* AUTHOR INFO (Mobile Optimized) */}
+<div className="mb-6 rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 sm:border-0 sm:p-0">
 
-        <div className="flex gap-4 mt-1 mb-4 text-sm">
-          <a
-            href="https://github.com/shubhamp476"
-            target="_blank"
-            className="hover:underline"
-          >
-            Github
-          </a>
-          <a
-            href="https://twitter.com/shu_bham_panwar"
-            target="_blank"
-            className="hover:underline"
-          >
-            Twitter
-          </a>
-          <a
-            href="https://linkedin.com/in/shubham476"
-            target="_blank"
-            className="hover:underline"
-          >
-            LinkedIn
-          </a>
-        </div>
-      </section>
+  {/* Top Row: Avatar + Name */}
+  <div className="flex items-center gap-3">
+    <img
+      src="/author.jpg"
+      alt="Shubham"
+      className="h-12 w-12 rounded-full object-cover"
+    />
+    <div>
+      <p className="font-semibold text-base text-black dark:text-white">
+        Shubham
+      </p>
+      <p className="text-xs text-neutral-500">
+        Software Developer & Blogger
+      </p>
+    </div>
+  </div>
+
+  {/* Social Links */}
+  <div className="mt-3 flex flex-wrap gap-3 text-sm text-neutral-600 dark:text-neutral-400">
+    <a
+      href="https://github.com/shubhamp476"
+      target="_blank"
+      className="px-2 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 hover:underline"
+    >
+      Github
+    </a>
+
+    <a
+      href="https://twitter.com/shu_bham_panwar"
+      target="_blank"
+      className="px-2 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 hover:underline"
+    >
+      Twitter
+    </a>
+
+    <a
+      href="https://linkedin.com/in/shubham476"
+      target="_blank"
+      className="px-2 py-1 rounded-md bg-neutral-100 dark:bg-neutral-800 hover:underline"
+    >
+      LinkedIn
+    </a>
+  </div>
+
+  {/* Reading Time */}
+  <div className="flex justify-between ">
+  <p className="mt-2 text-sm text-neutral-500">
+    ⏱ {readingTime} min read
+  </p>
+  <p className="mt-3 text-xs text-neutral-500">
+        Published on {publishedDate}
+  </p>
+  </div>
+</div>
+
 
       {/* FEATURED IMAGE */}
       {blog.featuredImage && (
@@ -182,66 +241,57 @@ export default async function BlogDetail({
       )}
 
       {/* CONTENT */}
-      <div className="prose prose-neutral dark:prose-invert max-w-none">
-        <ReactMarkdown
-          components={{
-            h2: ({ children }) => {
-              const id = String(children)
-                .toLowerCase()
-                .replace(/[^\w]+/g, "-");
-              return <h2 id={id}>{children}</h2>;
-            },
-            h3: ({ children }) => {
-              const id = String(children)
-                .toLowerCase()
-                .replace(/[^\w]+/g, "-");
-              return <h3 id={id}>{children}</h3>;
-            },
-          }}
-        >
-          {blog.content}
-        </ReactMarkdown>
+      <div className="prose prose-neutral  max-w-none">
+        <ReactMarkdown>{blog.content}</ReactMarkdown>
       </div>
 
-      {/* FAQ UI */}
+      {/* FAQ */}
       {blog.faqs?.length > 0 && (
         <section className="mt-16">
           <h2 className="text-2xl font-bold mb-6">FAQs</h2>
-
           <div className="space-y-4">
-            {blog.faqs.map(
-              (faq: { question: string; answer: string }, index: number) => (
-                <div
-                  key={index}
-                  className="border rounded-xl p-4 dark:border-neutral-700"
-                >
-                  <h3 className="font-semibold">{faq.question}</h3>
-                  <p className="mt-2 text-neutral-600 dark:text-neutral-300">
-                    {faq.answer}
-                  </p>
-                </div>
-              )
-            )}
+            {blog.faqs.map((faq: any, i: number) => (
+              <div
+                key={i}
+                className="border rounded-xl p-4 dark:border-neutral-700"
+              >
+                <h3 className="font-semibold">{faq.question}</h3>
+                <p className="mt-2 text-neutral-600 dark:text-neutral-300">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
       )}
 
+      {/* AD SPACE */}
+      <div className="my-30 rounded-xl  p-10 text-center text-neutral-400">
+        
+      </div>
+
       {/* RELATED BLOGS */}
       {relatedBlogs.length > 0 && (
-        <section className="mt-20">
-          <h2 className="text-2xl font-bold mb-6">Related Blogs</h2>
+        <section>
+          <h2 className="text-3xl font-bold mb-8">Read Next</h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-8">
             {relatedBlogs.map((b: any) => (
               <a
                 key={b._id}
                 href={`/blog/${b.slug}`}
-                className="border rounded-xl p-4 hover:shadow transition dark:border-neutral-700"
+                className="group"
               >
-                <h3 className="font-semibold">{b.title}</h3>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
-                  {b.excerpt}
-                </p>
+                <div className="overflow-hidden rounded-xl mb-4">
+                  <img
+                    src={b.featuredImage}
+                    alt={b.title}
+                    className="h-48 w-full object-cover transition-transform group-hover:scale-105"
+                  />
+                </div>
+                <h3 className="text-xl font-semibold group-hover:underline">
+                  {b.title}
+                </h3>
               </a>
             ))}
           </div>

@@ -1,7 +1,6 @@
 import BlogCard from "@/components/BlogCard";
 import BlogCardSkeleton from "@/components/BlogCardSkeleton";
 
-
 type Blog = {
   _id: string;
   title: string;
@@ -15,20 +14,19 @@ type Blog = {
   content?: string;
 };
 
-
-
-
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
   ? `${process.env.NEXT_PUBLIC_SITE_URL}`
-  : "http://localhost:3001";
+  : "http://localhost:3000";
 
 async function getBlogs(): Promise<Blog[]> {
   const res = await fetch(`${baseUrl}/api/blogs`, { cache: "no-store" });
 
-
   if (!res.ok) return [];
   return res.json();
 }
+
+
+
 
 export default async function BlogPage() {
   const blogs = await getBlogs();

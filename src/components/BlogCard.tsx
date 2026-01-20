@@ -12,13 +12,15 @@ type Blog = {
   content?: string;
 };
 
-function calculateReadingTime(text = "") {
-  const words = text.trim().split(/\s+/).length;
-  return Math.max(1, Math.ceil(words / 200));
+function calculateReadingTime(content: string | undefined) {
+  if (!content || typeof content !== "string") return 0;
+  const wordsPerMinute = 200;
+  const words = content.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
 }
 
 export default function BlogCard({ blog }: { blog: Blog }) {
-  const readingTime = calculateReadingTime(blog.content || "");
+  const readingTime = calculateReadingTime(blog.content);
 
   return (
     <article
@@ -31,13 +33,14 @@ export default function BlogCard({ blog }: { blog: Blog }) {
     >
       {/* IMAGE */}
       <div className="relative overflow-hidden">
-        
         {blog.category && (
-          <span className="
+          <span
+            className="
             absolute top-3 left-3 z-10
             rounded-full px-3 py-1 text-xs font-medium
             bg-black/70 text-white
-          ">
+          "
+          >
             {blog.category}
           </span>
         )}
@@ -71,9 +74,7 @@ export default function BlogCard({ blog }: { blog: Blog }) {
         <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
           <div className="flex items-center gap-3">
             <span>⏱ {readingTime} min</span>
-            {typeof blog.views === "number" && (
-              <span>👀 {blog.views}</span>
-            )}
+            {typeof blog.views === "number" && <span>👀 {blog.views}</span>}
           </div>
 
           <Link

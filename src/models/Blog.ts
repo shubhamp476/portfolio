@@ -35,6 +35,11 @@ const BlogSchema = new Schema(
   type: Number,
   default: 0,
 },
+readingTime: {
+  type: Number,
+  default: 1,
+},
+
 
 
     
