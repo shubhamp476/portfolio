@@ -178,7 +178,7 @@ export default async function BlogDetail({
 
 
       {/* TITLE */}
-      <h1 className="text-4xl font-bold mb-6">{blog.title}</h1>
+      <h1 className="text-4xl font-bold mb-8">{blog.title}</h1>
 
       {/* AUTHOR + DATE */}
 {/* AUTHOR INFO (Mobile Optimized) */}
@@ -186,14 +186,11 @@ export default async function BlogDetail({
 
   {/* Top Row: Avatar + Name */}
   <div className="flex items-center gap-3">
-      <Image
-        src={blog.featuredImage}
-        alt={blog.title}
-        width={1200}
-        height={630}
-        priority   // 🔥 LCP FIX
-        className="rounded-2xl mb-10 w-full"
-      />
+    <img
+      src="/author.jpg"
+      alt="Shubham"
+      className="h-12 w-12 rounded-full object-cover"
+    />
     <div>
       <p className="author-name">
         Shubham
@@ -254,22 +251,25 @@ export default async function BlogDetail({
 
       {/* FEATURED IMAGE */}
       {blog.featuredImage && (
-        <img
+        <Image
           src={blog.featuredImage}
           alt={blog.title}
+          width={1200}
+          height={630}
+          priority
           className="rounded-2xl mb-10 w-full"
         />
       )}
 
       {/* CONTENT */}
-      <div className="prose prose-neutral  max-w-none mt-8 ">
+      <div className="prose prose-neutral  max-w-none mb-24">
         <ReactMarkdown>{blog.content}</ReactMarkdown>
       </div>
 
       {/* FAQ */}
       {blog.faqs?.length > 0 && (
         <section className="mt-24">
-          <h2 className="text-2xl font-bold mb-6">FAQs</h2>
+          <h2 className="text-2xl font-bold mb-8">FAQs</h2>
           <div className="space-y-4">
             {blog.faqs.map((faq: any, i: number) => (
               <div
