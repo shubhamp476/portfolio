@@ -26,6 +26,7 @@ export default function EditBlogPage() {
   const [slug, setSlug] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState<any[]>([]);
   const [tags, setTags] = useState("");
 
   const [featuredImage, setFeaturedImage] = useState("");

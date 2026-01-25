@@ -3,33 +3,49 @@ import { connectDB } from "@/lib/mongodb";
 import Blog from "@/models/Blog";
 import { Types } from "mongoose";
 
-// Get → List of blogs
+// Get → List of blogs (ADMIN + PUBLIC + SEARCH + CATEGORY)
 export async function GET(req: Request) {
   try {
     await connectDB();
 
     const { searchParams } = new URL(req.url);
+
     const id = searchParams.get("id");
     const isAdmin = searchParams.get("admin") === "true";
+    const category = searchParams.get("category");
+    const search = searchParams.get("search");
 
-    // Get blog by ID (admin edit)
+    /* ===============================
+       1️⃣ ADMIN: Get blog by ID
+    =============================== */
     if (id && Types.ObjectId.isValid(id)) {
       const blog = await Blog.findById(id).lean();
       return NextResponse.json(blog);
     }
 
-    //reading time function
-    function calculateReadingTime(content: string) {
-  if (!content) return 0;
-  const wordsPerMinute = 200;
-  const words = content.trim().split(/\s+/).length;
-  return Math.ceil(words / wordsPerMinute);
-}
+    /* ===============================
+       2️⃣ FILTER BUILDING
+    =============================== */
+    const filter: any = isAdmin ? {} : { status: "published" };
 
+    // Category filter
+    if (category && category !== "all") {
+      filter.category = category;
+    }
 
-    // 🔹 Blog list
+    // Search filter (title + excerpt)
+    if (search) {
+      filter.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { excerpt: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    /* ===============================
+       3️⃣ BLOG LIST
+    =============================== */
     const blogs = await Blog.find(
-      isAdmin ? {} : { status: "published" },
+      filter,
       {
         title: 1,
         slug: 1,
@@ -40,7 +56,7 @@ export async function GET(req: Request) {
         createdAt: 1,
         status: 1,
         views: 1,
-        content: 1,
+        content: 1, // needed for reading time
       }
     )
       .sort({ createdAt: -1 })
@@ -55,6 +71,7 @@ export async function GET(req: Request) {
     );
   }
 }
+
 
 // Post → Create new blog
 export async function POST(req: Request) {
