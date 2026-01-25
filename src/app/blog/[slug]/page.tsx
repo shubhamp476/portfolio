@@ -11,7 +11,7 @@ const baseUrl =
 // Fetch single blog
 async function getBlog(slug: string) {
   const res = await fetch(`${baseUrl}/api/blogs/${slug}`, {
-    cache: "no-store",
+    next: { revalidate: 3600 } 
   });
   if (!res.ok) return null;
   return res.json();
@@ -186,9 +186,11 @@ export default async function BlogDetail({
 
   {/* Top Row: Avatar + Name */}
   <div className="flex items-center gap-3">
-    <img
+    <Image
       src="/author.jpg"
       alt="Shubham"
+      width={48}
+      height={48}
       className="h-12 w-12 rounded-full object-cover"
     />
     <div>
@@ -251,15 +253,16 @@ export default async function BlogDetail({
 
       {/* FEATURED IMAGE */}
       {blog.featuredImage && (
-        <Image
-          src={blog.featuredImage}
-          alt={blog.title}
-          width={1200}
-          height={630}
-          priority
-          className="rounded-2xl mb-10 w-full"
-        />
-      )}
+  <Image
+    src={blog.featuredImage}
+    alt={blog.title}
+    width={1200}
+    height={630}
+    priority
+    quality={85} 
+    className="rounded-2xl mb-10 w-full"
+  />
+)}
 
       {/* CONTENT */}
       <div className="prose prose-neutral  max-w-none mb-24">
@@ -298,15 +301,14 @@ export default async function BlogDetail({
 
           <div className="grid md:grid-cols-2 gap-8">
             {relatedBlogs.map((b: any) => (
-              <a
-                key={b._id}
-                href={`/blog/${b.slug}`}
-                className="group"
-              >
+              <a key={b._id} href={`/blog/${b.slug}`} className="group">
                 <div className="overflow-hidden rounded-xl mb-4">
-                  <img
+                  <Image 
                     src={b.featuredImage}
                     alt={b.title}
+                    width={600}
+                    height={400}
+                    loading="lazy" 
                     className="h-48 w-full object-cover transition-transform group-hover:scale-105"
                   />
                 </div>
