@@ -54,6 +54,7 @@ export async function GET(req: Request) {
         tags: 1,
         category: 1,
         createdAt: 1,
+        updatedAt: 1,
         status: 1,
         views: 1,
         content: 1, // needed for reading time
@@ -108,7 +109,15 @@ export async function PUT(req: Request) {
       );
     }
 
-    await Blog.findByIdAndUpdate(id, body);
+    await Blog.findByIdAndUpdate(
+      id,
+      {
+        ...body,
+        updatedAt: new Date(),
+      },
+      { new: true }
+    );
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("BLOG UPDATE ERROR:", error);

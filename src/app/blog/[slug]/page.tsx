@@ -144,7 +144,15 @@ export default async function BlogDetail({
       month: "long",
       day: "numeric",
     }
+    
   );
+  const updatedDate =
+  blog.updatedAt &&
+  new Date(blog.updatedAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <article className="max-w-4xl mx-auto px-6 py-16">
@@ -224,9 +232,12 @@ export default async function BlogDetail({
   <p className="mt-2 text-sm text-neutral-500">
     ⏱ {readingTime} min read
   </p>
-  <p className="mt-3 text-xs text-neutral-500">
-        Published on {publishedDate}
-  </p>
+  <p className="text-sm text-neutral-500">
+  Published on {publishedDate}
+  {updatedDate && updatedDate !== publishedDate && (
+    <> • Updated on {updatedDate}</>
+  )}
+</p>
   </div>
 </div>
 

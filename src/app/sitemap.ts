@@ -1,56 +1,61 @@
 import { MetadataRoute } from "next";
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
-async function getBlogs() {
-  try {
-    const res = await fetch(`${baseUrl}/api/blogs`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://portfolio-v31b.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const blogs = await getBlogs();
-
+  // 🔹 Static pages
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: `${baseUrl}/`,
+      url: `${SITE_URL}/`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
     },
     {
-      url: `${baseUrl}/blog`,
+      url: `${SITE_URL}/projects`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/blog`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/projects`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/contact`,
+      url: `${SITE_URL}/contact`,
       lastModified: new Date(),
       changeFrequency: "yearly",
-      priority: 0.4,
+      priority: 0.5,
     },
   ];
 
-  const blogRoutes: MetadataRoute.Sitemap = blogs.map((blog: any) => ({
-    url: `${baseUrl}/blog/${blog.slug}`,
-    lastModified: new Date(blog.updatedAt || blog.createdAt),
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  // 🔹 Blog pages
+  let blogRoutes: MetadataRoute.Sitemap = [];
+
+  try {
+    const res = await fetch(`${SITE_URL}/api/blogs`, {
+      cache: "no-store",
+    });
+
+    if (res.ok) {
+      const blogs = await res.json();
+
+      blogRoutes = blogs.map((blog: any) => ({
+        url: `${SITE_URL}/blog/${blog.slug}`,
+        lastModified: blog.updatedAt
+          ? new Date(blog.updatedAt)
+          : new Date(blog.createdAt),
+        changeFrequency: "monthly",
+        priority: 0.7,
+      }));
+    }
+  } catch (error) {
+    console.error("❌ Sitemap fetch failed:", error);
+  }
 
   return [...staticRoutes, ...blogRoutes];
 }
