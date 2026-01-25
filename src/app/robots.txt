@@ -6,12 +6,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: [
-          "/admin",
-          "/api",
-        ],
+        disallow: ["/admin", "/api"],
       },
     ],
-    sitemap: `${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml`,
+    sitemap: "https://portfolio-v31b.vercel.app/sitemap.xml",
   };
 }
