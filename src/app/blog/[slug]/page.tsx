@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
 import BlogShareButtons from "@/components/BlogShareButtons";
+import Image from "next/image";
 
 
 
@@ -185,11 +186,14 @@ export default async function BlogDetail({
 
   {/* Top Row: Avatar + Name */}
   <div className="flex items-center gap-3">
-    <img
-      src="/author.jpg"
-      alt="Shubham"
-      className="h-12 w-12 rounded-full object-cover"
-    />
+      <Image
+        src={blog.featuredImage}
+        alt={blog.title}
+        width={1200}
+        height={630}
+        priority   // 🔥 LCP FIX
+        className="rounded-2xl mb-10 w-full"
+      />
     <div>
       <p className="author-name">
         Shubham
@@ -258,13 +262,13 @@ export default async function BlogDetail({
       )}
 
       {/* CONTENT */}
-      <div className="prose prose-neutral  max-w-none">
+      <div className="prose prose-neutral  max-w-none mt-8 ">
         <ReactMarkdown>{blog.content}</ReactMarkdown>
       </div>
 
       {/* FAQ */}
       {blog.faqs?.length > 0 && (
-        <section className="mt-16">
+        <section className="mt-24">
           <h2 className="text-2xl font-bold mb-6">FAQs</h2>
           <div className="space-y-4">
             {blog.faqs.map((faq: any, i: number) => (
