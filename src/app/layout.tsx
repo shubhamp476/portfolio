@@ -9,6 +9,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="quxsU8ZG1OVbiIU_c7iJanuQSosLRp5SxXR1x8EuG5E"
+        />
+      </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Navbar />

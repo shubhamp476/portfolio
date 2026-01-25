@@ -183,11 +183,11 @@ export default async function BlogDetail({
       className="h-12 w-12 rounded-full object-cover"
     />
     <div>
-      <p className="font-semibold text-base text-black dark:text-white">
+      <p className="author-name">
         Shubham
       </p>
       <p className="text-xs text-neutral-500">
-        Software Developer & Blogger
+        Software Developer 
       </p>
     </div>
   </div>
@@ -256,7 +256,7 @@ export default async function BlogDetail({
                 className="border rounded-xl p-4 dark:border-neutral-700"
               >
                 <h3 className="font-semibold">{faq.question}</h3>
-                <p className="mt-2 text-neutral-600 dark:text-neutral-300">
+                <p className="faq-ans mt-2 text-neutral-800 ">
                   {faq.answer}
                 </p>
               </div>

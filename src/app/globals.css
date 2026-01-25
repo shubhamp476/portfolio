@@ -60,11 +60,19 @@
 }
 
 .author-name {
-  @apply font-medium text-2xl text-neutral-800 dark:text-neutral-200;
+  @apply font-semibold text-xl text-neutral-800 dark:text-neutral-200;
 }
 
 .dark .author-name {
-  @apply font-medium text-2xl  text-neutral-200;
+  @apply font-medium text-xl  text-neutral-200;
+}
+
+.light .author-name {
+  @apply font-medium text-xl  text-neutral-800;
+}
+
+.dark .faq-ans {
+  @apply text-neutral-300;
 }
 
 .dark .date {
