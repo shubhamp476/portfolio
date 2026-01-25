@@ -232,12 +232,18 @@ export default async function BlogDetail({
   <p className="mt-2 text-sm text-neutral-500">
     ⏱ {readingTime} min read
   </p>
-  <p className="text-sm text-neutral-500">
-  Published on {publishedDate}
+  <p className="text-xs sm:text-sm text-neutral-500 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+  <span>
+    Published on <span className="font-medium">{publishedDate}</span>
+  </span>
+
   {updatedDate && updatedDate !== publishedDate && (
-    <> • Updated on {updatedDate}</>
+    <span className="sm:before:content-['•'] sm:before:mx-2">
+      Updated on <span className="font-medium">{updatedDate}</span>
+    </span>
   )}
 </p>
+
   </div>
 </div>
 
