@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 🔹 Static pages
   const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: `${SITE_URL}/`,
+      url: `${SITE_URL}`,  
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
@@ -37,8 +37,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogRoutes: MetadataRoute.Sitemap = [];
 
   try {
+  
     const res = await fetch(`${SITE_URL}/api/blogs`, {
-      cache: "no-store",
+      next: { revalidate: 3600 }, 
     });
 
     if (res.ok) {
@@ -49,8 +50,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: blog.updatedAt
           ? new Date(blog.updatedAt)
           : new Date(blog.createdAt),
-        changeFrequency: "monthly",
-        priority: 0.7,
+        changeFrequency: "weekly" as const,
+        priority: 0.8,
       }));
     }
   } catch (error) {
